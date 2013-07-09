@@ -53,8 +53,12 @@ function defaultSerialize (config) {
   return 'module.exports = ' + JSON.stringify(config)
 }
 
-function noConfig (configFile, cb) {
+function noConfigFound (configFile, cb) {
   setImmediate(cb.bind(null, null, null));
+}
+
+function noop (config) {
+  return config;
 }
 
 /**
@@ -90,11 +94,13 @@ function noConfig (configFile, cb) {
 var go = module.exports = function (opts, cb) {
   opts = opts || {};
 
-  var defaultConfig =  opts.defaultConfig || null
-    , configDir     =  resolvePath(opts.configDir)
+  var configDir     =  resolvePath(opts.configDir)
     , configFile    =  path.join(configDir, opts.configFile)
+    ;
+    
+  var defaultConfig =  opts.defaultConfig     || null
     , serialize     =  sinless(opts.serialize || defaultSerialize)
-    , edit          =  sinless(opts.edit)
+    , edit          =  sinless(opts.edit      || noop)
     ;
 
 
@@ -108,7 +114,7 @@ var go = module.exports = function (opts, cb) {
         tasks.push(copyDefaultConfig.bind(null, defaultConfig));
         tasks.push(loadConfig);
       } else {
-        tasks.push(noConfig);
+        tasks.push(noConfigFound);
       }
     } else {
       tasks.push(loadConfig);
