@@ -32,4 +32,5 @@ configurate(
       var conf = require(configDir + '/' + configFile);
       console.log(conf);
   }
-);
+)
+.on('any', console.error);

@@ -5,6 +5,8 @@ var path    =  require('path')
   , mkdirp  =  require('mkdirp')
   , runnel  =  require('runnel')
   , sinless =  require('sinless')
+  , Emitter =  require('events').EventEmitter
+  , format  =  require('util').format
   , HOME    =  path.join(__dirname, 'test', 'fixtures', 'home') // process.env.HOME
   ;
 
@@ -94,6 +96,15 @@ function noop (config) {
 var go = module.exports = function (opts, cb) {
   opts = opts || {};
 
+  var events = new Emitter();
+
+  function emit (name, msg) { 
+    return sinless(function (passthru) {
+      events.emit(name, msg || '');
+      return passthru;
+    });
+  }
+
   var configDir     =  resolvePath(opts.configDir)
     , configFile    =  path.join(configDir, opts.configFile)
     ;
@@ -106,13 +117,22 @@ var go = module.exports = function (opts, cb) {
 
   var loadConfig = sinless(opts.loadConfig || defaultLoad);
   
-  var tasks = [ runnel.seed(configFile), mkconfigDir ];
+  var tasks = [ 
+      runnel.seed(configFile)
+    , mkconfigDir 
+    , emit('any', format('Created config dir at: %s', configDir)) 
+  ];
 
   fs.exists(configFile, function (exists) {
     if (!exists) { 
       if (defaultConfig) {
-        tasks.push(copyDefaultConfig.bind(null, defaultConfig));
-        tasks.push(loadConfig);
+        tasks = tasks.concat(
+          [ copyDefaultConfig.bind(null, defaultConfig)
+          , emit('any', format('Copied default config from %s to %s', defaultConfig, configDir)) 
+          , loadConfig
+          , emit('any', format('Loaded config')) 
+          ]
+        );
       } else {
         tasks.push(noConfigFound);
       }
@@ -130,4 +150,6 @@ var go = module.exports = function (opts, cb) {
 
     runnel(tasks);
   });
+
+  return events;
 };
