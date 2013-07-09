@@ -90,7 +90,7 @@ function noop (config) {
  * @function
  * @return void
  */
-
+// -- emit events
 var go = module.exports = function (opts, cb) {
   opts = opts || {};
 
@@ -131,29 +131,3 @@ var go = module.exports = function (opts, cb) {
     runnel(tasks);
   });
 };
-
-var edit = function (config) {
-  config.added = 'hiiiiello';
-  return config;
-}
-
-// -- emit events
-
-var defaultConfig = path.join(__dirname, 'test', 'fixtures', 'defaults', 'cjs-empty.js');
-var configPath = path.join(HOME, '.config');
-
-try { fs.unlinkSync(configPath); } catch (_) {}
-
-go(
-    { configDir     :  '.config'
-    , configFile    :  'testlingify.js'
-    , defaultConfig :  defaultConfig
-    , edit          :  edit
-    }
-  , function (err, conf) {
-    if (err) return console.error(err);
-    console.log(require(configPath + '/testlingify.js'));
-});
-
-
-
