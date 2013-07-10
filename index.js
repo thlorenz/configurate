@@ -55,8 +55,8 @@ function defaultSerialize (config) {
   return 'module.exports = ' + JSON.stringify(config)
 }
 
-function noConfigFound (configFile, cb) {
-  setImmediate(cb.bind(null, null, null));
+function noConfigFound (configFile) {
+  return {};
 }
 
 function noop (config) {
@@ -113,6 +113,7 @@ var go = module.exports = function (opts, cb) {
   var defaultConfig =  opts.defaultConfig     || null
     , serialize     =  sinless(opts.serialize || defaultSerialize)
     , edit          =  sinless(opts.edit      || noop)
+    , notfound      =  sinless(noConfigFound)
     ;
 
 
@@ -136,7 +137,7 @@ var go = module.exports = function (opts, cb) {
         );
       } else {
         tasks = tasks.concat(
-          [ noConfigFound
+          [ notfound
           , emit('notfound-config')
           ]
         );

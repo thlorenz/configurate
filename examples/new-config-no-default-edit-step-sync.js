@@ -14,8 +14,7 @@ var edit = function (config) {
   return config;
 }
 
-var defaultConfig =  path.join(__dirname, 'defaults', 'cjs-partial.js')
-  , configDir     =  path.join(__dirname, 'config')
+var configDir     =  path.join(__dirname, 'config')
   , configFile    =  'configurate.js'
   ;
 
@@ -25,7 +24,6 @@ try { rmrf.sync(configDir); } catch (err) { console.error(err); }
 configurate(
     { configDir     :  configDir 
     , configFile    :  configFile
-    , defaultConfig :  defaultConfig
     , edit          :  edit
     }
   , function (err) {
