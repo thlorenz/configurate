@@ -7,6 +7,7 @@ var path    =  require('path')
   , sinless =  require('sinless')
   , Emitter =  require('events').EventEmitter
   , format  =  require('util').format
+  , inspect =  require('util').inspect
   , HOME    =  path.join(__dirname, 'test', 'fixtures', 'home') // process.env.HOME
   ;
 
@@ -52,7 +53,7 @@ function defaultLoad (p) {
 }
 
 function defaultSerialize (config) {
-  return 'module.exports = ' + JSON.stringify(config)
+  return 'module.exports = ' + inspect(config)
 }
 
 function noConfigFound (configFile) {
