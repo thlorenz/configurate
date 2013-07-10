@@ -92,7 +92,6 @@ function noop (config) {
  * @function
  * @return void
  */
-// -- emit events
 var go = module.exports = function (opts, cb) {
   opts = opts || {};
 
@@ -115,7 +114,6 @@ var go = module.exports = function (opts, cb) {
     , edit          =  sinless(opts.edit      || noop)
     , notfound      =  sinless(noConfigFound)
     ;
-
 
   var loadConfig = sinless(opts.loadConfig || defaultLoad);
   
