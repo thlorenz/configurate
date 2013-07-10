@@ -47,7 +47,7 @@ configurate(
   log.info('configurator', 'no existing config found and no default supplied, starting from scratch'); 
 })
 .on('edited-config', function (conf) { 
-  log.info('configurator', 'edited config: ', conf); 
+  log.info('configurator', 'edited config:\n', conf); 
 })
 .on('serialized-config', function (conf) { 
   log.info('configurator', 'serialized config: ', conf); 
