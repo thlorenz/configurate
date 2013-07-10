@@ -24,7 +24,8 @@
     "nave": "~0.4.3",
     "tape": "~1.0.4",
     "tap": "~0.4.3",
-    "rimraf": "~2.2.0"
+    "rimraf": "~2.2.0",
+    "npmlog": "0.0.3"
   },
   "keywords": [],
   "author": {

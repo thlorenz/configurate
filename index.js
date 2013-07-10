@@ -98,9 +98,10 @@ var go = module.exports = function (opts, cb) {
 
   var events = new Emitter();
 
-  function emit (name, msg) { 
+  function emit (name, arg) { 
     return sinless(function (passthru) {
-      events.emit(name, msg || '');
+      if (!arg) arg = passthru;
+      events.emit(name, arg, passthru);
       return passthru;
     });
   }
@@ -120,7 +121,7 @@ var go = module.exports = function (opts, cb) {
   var tasks = [ 
       runnel.seed(configFile)
     , mkconfigDir 
-    , emit('any', format('Created config dir at: %s', configDir)) 
+    , emit('created-configdir', configDir) 
   ];
 
   fs.exists(configFile, function (exists) {
@@ -128,22 +129,33 @@ var go = module.exports = function (opts, cb) {
       if (defaultConfig) {
         tasks = tasks.concat(
           [ copyDefaultConfig.bind(null, defaultConfig)
-          , emit('any', format('Copied default config from %s to %s', defaultConfig, configDir)) 
+          , emit('copied-default', defaultConfig) 
           , loadConfig
-          , emit('any', format('Loaded config')) 
+          , emit('loaded-config') 
           ]
         );
       } else {
-        tasks.push(noConfigFound);
+        tasks = tasks.concat(
+          [ noConfigFound
+          , emit('notfound-config')
+          ]
+        );
       }
     } else {
-      tasks.push(loadConfig);
+         tasks = tasks.concat(
+          [ loadConfig
+          , emit('loaded-config') 
+          ]
+        );
     }
 
     tasks = tasks.concat(
       [ edit
+      , emit('edited-config') 
       , serialize
+      , emit('serialized-config') 
       , fs.writeFile.bind(fs, configFile)
+      , emit('wrote-config', configFile) 
       , cb
       ]
     )

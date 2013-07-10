@@ -4,6 +4,7 @@ var path        =  require('path')
   , fs          =  require('fs')
   , rmrf        =  require('rimraf')
   , configurate =  require('..')
+  , log         =  require('npmlog')
   ;
 
 var edit = function (config) {
@@ -33,4 +34,24 @@ configurate(
       console.log(conf);
   }
 )
-.on('any', console.error);
+.on('created-configdir', function (dir) { 
+  log.info('configurator', 'created config dir at: ', dir); 
+})
+.on('copied-default', function (defaultConfig, conf) { 
+  log.info('configurator', 'copied default config (%s) to (%s)', defaultConfig, conf); 
+})
+.on('loaded-config', function (conf) { 
+  log.info('configurator', 'loaded config: ', conf); 
+})
+.on('notfound-config', function (conf) { 
+  log.info('configurator', 'no config found'); 
+})
+.on('edited-config', function (conf) { 
+  log.info('configurator', 'edited config: ', conf); 
+})
+.on('serialized-config', function (conf) { 
+  log.info('configurator', 'serialized config: ', conf); 
+})
+.on('wrote-config', function (conf) { 
+  log.info('configurator', 'wrote config: ', conf); 
+})
