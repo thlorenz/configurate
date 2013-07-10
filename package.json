@@ -25,7 +25,8 @@
     "tape": "~1.0.4",
     "tap": "~0.4.3",
     "rimraf": "~2.2.0",
-    "npmlog": "0.0.3"
+    "npmlog": "0.0.3",
+    "promfig": "~0.1.0"
   },
   "keywords": [],
   "author": {
