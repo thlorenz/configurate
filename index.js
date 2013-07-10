@@ -62,6 +62,11 @@ function noConfigFound (configFile) {
 function noop (config) {
   return config;
 }
+function writeConfig (configFile, config, cb) { 
+  fs.writeFile(configFile, config, 'utf8', function (err) {
+    cb(err, configFile);  
+  });
+}
 
 /**
  * 
@@ -115,7 +120,7 @@ var go = module.exports = function (opts, cb) {
     , notfound      =  sinless(noConfigFound)
     ;
 
-  var loadConfig = sinless(opts.loadConfig || defaultLoad);
+  var load = sinless(opts.load || defaultLoad);
   
   var tasks = [ 
       runnel.seed(configFile)
@@ -130,7 +135,7 @@ var go = module.exports = function (opts, cb) {
         tasks = tasks.concat(
           [ copyDefaultConfig.bind(null, defaultConfig)
           , emit('copied-default', defaultConfig) 
-          , loadConfig
+          , load
           , emit('loaded-config') 
           ]
         );
@@ -145,7 +150,7 @@ var go = module.exports = function (opts, cb) {
     } else {
       // config existed
       tasks = tasks.concat(
-        [ loadConfig
+        [ load
         , emit('loaded-config') 
         ]
       );
@@ -156,9 +161,9 @@ var go = module.exports = function (opts, cb) {
       , emit('edited-config') 
       , serialize
       , emit('serialized-config') 
-      , fs.writeFile.bind(fs, configFile)
-      , emit('wrote-config', configFile) 
-      , cb
+      , writeConfig.bind(null, configFile)
+      , emit('wrote-config') 
+      , cb 
       ]
     )
 
