@@ -126,6 +126,7 @@ var go = module.exports = function (opts, cb) {
   fs.exists(configFile, function (exists) {
     if (!exists) { 
       if (defaultConfig) {
+        // config didn't exist but we were supplied a default config
         tasks = tasks.concat(
           [ copyDefaultConfig.bind(null, defaultConfig)
           , emit('copied-default', defaultConfig) 
@@ -134,6 +135,7 @@ var go = module.exports = function (opts, cb) {
           ]
         );
       } else {
+        // config didn't exist and we were not given a default config
         tasks = tasks.concat(
           [ notfound
           , emit('notfound-config')
@@ -141,11 +143,12 @@ var go = module.exports = function (opts, cb) {
         );
       }
     } else {
-         tasks = tasks.concat(
-          [ loadConfig
-          , emit('loaded-config') 
-          ]
-        );
+      // config existed
+      tasks = tasks.concat(
+        [ loadConfig
+        , emit('loaded-config') 
+        ]
+      );
     }
 
     tasks = tasks.concat(
