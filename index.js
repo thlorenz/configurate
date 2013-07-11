@@ -100,11 +100,11 @@ function writeConfig (configFile, config, cb) {
  *  - configDir {String}     :  directory in which the config file resides (default $HOME) if it is relative, it is created relative to $HOME
  *  - configFile {String}    :  name of the config file which is combined with the configDir to build full config file path
  *  - defaultConfig {String} :  path to default config to load in case the config is not found at the config path
- *  - load {Function}        :  overrides config load function, default is `require('..')`
- *  - serialize {Function}   :  overrides serialization function, default creates `module.exports = { ... }`
- *  - edit {Function}        :  overrides edit function, be default config is not edited
+ *  - load {Function}        :  called with full path to config, default is `require('..')`
+ *  - edit {Function}        :  called with loaded config object, by default config is not edited
+ *  - serialize {Function}   :  called with edited config object, default creates `'module.exports = { ... }'`
  *
- * @param cb {Function} function (err) err is set if something went wront
+ * @param cb {Function} function (err) err is set if something went wrong
  * @return {EventEmitter} which emits the following events:
  *  - created-configdir with the path to the created dir
  *  - copied-default    with the path to the default config that was copied and the path to which it was copied to
