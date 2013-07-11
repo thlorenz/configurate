@@ -32,15 +32,15 @@ configurate(
     , defaultConfig :  defaultConfig
     , edit          :  edit
     }
-  , function (err) {
+  , function (err, config, configPath) {
       if (err) return console.error(err);
+
+      log.info('done', 'config:\n', config);
+      log.info('done', 'stored at:', configPath);
     }
 )
 .on('created-configdir', function (dir) { 
   log.info('configurator', 'created config dir at: ', dir); 
-})
-.on('notfound-config', function (conf) { 
-  log.info('configurator', 'no existing config found and no default supplied, starting from scratch'); 
 })
 ```
 
@@ -60,12 +60,14 @@ module.exports = {
 ➝  node examples/simple.js
 info configurator created config dir at:  /Users/thlorenz/dev/js/projects/configurate/examples/config
 Please enter your username : thlorenz
-Please enter your password :  *********************************
-info configurator serialized config:  module.exports = { default: true,
-info configurator   id: 1,
-info configurator   numberOfDefaults: 2,
-info configurator   user: 'thlorenz',
-info configurator   password: 'supersecretpasswordiuseeverywhere' }
+Please enter your password :  ********************************************
+info done config:
+info done  { default: true,
+info done   id: 1,
+info done   numberOfDefaults: 2,
+info done   user: 'thlorenz',
+info done   password: 'superlongandsecretpasswordthatiuseeverywhere' }
+info done stored at: /Users/thlorenz/dev/js/projects/configurate/examples/config/configurate.js
 ```
 [Many more examples](https://github.com/thlorenz/configurate/tree/master/examples)
 
