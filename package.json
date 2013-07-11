@@ -1,6 +1,6 @@
 {
   "name": "configurate",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Resolves a config with the given method or creates one from a given default or creation method.",
   "main": "index.js",
   "scripts": {
