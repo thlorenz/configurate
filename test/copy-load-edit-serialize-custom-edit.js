@@ -11,7 +11,7 @@ var path   =  require('path')
   ;
 
 var configDir  =  path.join(__dirname, 'fixtures', 'config')
-  , configFile =  'load-edit-serialize-custom-edit-sync.js'
+  , configFile =  'copy-load-edit-serialize-custom-edit.js'
   , configPath =  path.join(configDir, configFile)
 
 function edit (config) {
@@ -19,23 +19,22 @@ function edit (config) {
   return config;
 }
 
-test('\nload an existing config, edit and serialize it. custom: edit', function (t) {
-  t.plan(6)
+test('\nconfig does not exist, load default, edit and serialize it. custom: edit', function (t) {
+  t.plan(8)
   
-  var origConf                =  { orig: { id: 1, existed: true } };
+  var defaultConfPath         =  require.resolve('./fixtures/defaults/exports');
   var expectedConf            =  { orig: { id: 1, existed: true }, hello: 'world' };
   var expectedSerializedConf  =  'module.exports = { orig: { id: 1, existed: true }, hello: \'world\' }'
 
   // clean up from previous example runs
   try { rmrf.sync(configDir); } catch (err) { console.error(err); }
 
-  // pretend a config existed there already
-  mkdirp.sync(configDir);
-  fs.writeFileSync(configPath, 'module.exports = { orig: { id: 1, existed: true } }', 'utf8');
+  // pretend  config didn't exit yet
 
   configurate(
       { configDir     :  configDir 
       , configFile    :  configFile
+      , defaultConfig :  defaultConfPath
       , edit          :  edit
       }
     , function (err) {
@@ -48,10 +47,11 @@ test('\nload an existing config, edit and serialize it. custom: edit', function 
     t.equal(configDir, dir, 'emits created-configdir')
   })
   .on('copied-default', function (defaultConfig, conf) { 
-    t.fail('should not emit copied-default')
+    t.equal(defaultConfig, defaultConfPath, 'emits copied-default with default config path')
+    t.equal(conf, configPath, 'and target config path')
   })
   .on('loaded-config', function (conf) { 
-    t.deepEqual(conf, origConf, 'emits loaded-config with original config')
+    t.deepEqual(conf, require(defaultConfPath), 'emits loaded-config with default config')
   })
   .on('notfound-config', function (conf) { 
     t.fail('should not emit notfound-config')
