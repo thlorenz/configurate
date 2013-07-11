@@ -36,10 +36,16 @@ configurate(
     , edit          :  edit
     , serialize     :  serialize
     }
-  , function (err) {
+  , function (err, config, configPath) {
       if (err) return console.error(err);
-      var conf = require(configDir + '/' + configFile);
-      console.log(conf);
+
+      log.info('done', 'config:\n', config);
+      log.info('done', 'stored at:', configPath);
+
+      fs.readFile(configPath, 'utf8', function (err, text) {
+        if (err) return console.error(err);
+        log.info('done', 'as:\n', text);
+      });
   }
 )
 .on('loaded-config', function (conf) { 

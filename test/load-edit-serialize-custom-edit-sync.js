@@ -20,7 +20,7 @@ function edit (config) {
 }
 
 test('\nload an existing config, edit and serialize it. custom: edit', function (t) {
-  t.plan(6)
+  t.plan(8)
   
   var origConf                =  { orig: { id: 1, existed: true } };
   var expectedConf            =  { orig: { id: 1, existed: true }, hello: 'world' };
@@ -38,10 +38,12 @@ test('\nload an existing config, edit and serialize it. custom: edit', function 
       , configFile    :  configFile
       , edit          :  edit
       }
-    , function (err) {
+    , function (err, conf_, configPath_) {
         if (err) return console.error(err);
         var conf = require(configPath);
         t.deepEqual(conf, expectedConf, 'calls back when done writing config with edits')
+        t.deepEqual(conf_, expectedConf, 'and includes updated config object')
+        t.equal(configPath_, configPath, 'and includes full config path')
     }
   )
   .on('created-configdir', function (dir) { 

@@ -115,6 +115,15 @@ function writeConfig (configFile, config, cb) {
  *  - wrote-config      with the path that the config was written to
  */
 var go = module.exports = function configurate (opts, cb) {
+  var currentConfig;
+
+  var tapLatestConfig = sinless(
+    function (conf) {
+      currentConfig = conf;
+      return conf;
+    }
+  );
+
   opts = opts || {};
 
   var events = new Emitter();
@@ -181,12 +190,16 @@ var go = module.exports = function configurate (opts, cb) {
       )
     }
 
+    tasks.push(tapLatestConfig);
+
     tasks = tasks.concat(
       [ serialize
       , emit('serialized-config') 
       , writeConfig.bind(null, configFile)
       , emit('wrote-config') 
-      , cb 
+      , function (err, configPath) {
+          cb(err, currentConfig, configPath);
+        }
       ]
     )
 

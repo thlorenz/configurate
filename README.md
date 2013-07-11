@@ -42,9 +42,6 @@ configurate(
 .on('notfound-config', function (conf) { 
   log.info('configurator', 'no existing config found and no default supplied, starting from scratch'); 
 })
-.on('serialized-config', function (conf) { 
-  log.info('configurator', 'serialized config: ', conf); 
-})
 ```
 
 **default config - `cjs-partial`**:

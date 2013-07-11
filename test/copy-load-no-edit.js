@@ -15,7 +15,7 @@ var configDir  =  path.join(__dirname, 'fixtures', 'config')
   , configPath =  path.join(configDir, configFile)
 
 test('\nconfig does not exist, load default, no edit and serialize it', function (t) {
-  t.plan(7)
+  t.plan(9)
   
   var defaultConfPath         =  require.resolve('./fixtures/defaults/exports');
   var expectedConf            =  { orig: { id: 1, existed: true } };
@@ -31,10 +31,12 @@ test('\nconfig does not exist, load default, no edit and serialize it', function
       , configFile    :  configFile
       , defaultConfig :  defaultConfPath
       }
-    , function (err) {
+    , function (err, conf_, configPath_) {
         if (err) return console.error(err);
         var conf = require(configPath);
         t.deepEqual(conf, expectedConf, 'calls back when done writing config with edits')
+        t.deepEqual(conf_, expectedConf, 'and includes updated config object')
+        t.equal(configPath_, configPath, 'and includes full config path')
     }
   )
   .on('created-configdir', function (dir) { 

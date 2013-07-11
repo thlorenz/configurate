@@ -32,7 +32,7 @@ var configDir  =  path.join(__dirname, 'fixtures', 'config')
   , configPath =  path.join(configDir, configFile)
 
 test('\nconfig does not exist, custom load default, no edit and custom serialize it', function (t) {
-  t.plan(7)
+  t.plan(9)
   
   var defaultConfPath         =  require.resolve('./fixtures/defaults/custom.txt');
   var expectedConf            =  { id: '1', existed: 'true' };
@@ -50,10 +50,12 @@ test('\nconfig does not exist, custom load default, no edit and custom serialize
       , load          :  load
       , serialize     :  serialize
       }
-    , function (err) {
+    , function (err, conf_, configPath_) {
         if (err) return console.error(err);
         var conf = fs.readFileSync(configPath, 'utf8')
         t.deepEqual(conf, expectedSerializedConf, 'calls back when done writing config with edits')
+        t.deepEqual(conf_, expectedConf, 'and includes updated config object')
+        t.equal(configPath_, configPath, 'and includes full config path')
       }
   )
   .on('created-configdir', function (dir) { 

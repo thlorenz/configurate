@@ -27,8 +27,11 @@ configurate(
     , defaultConfig :  defaultConfig
     , edit          :  edit
     }
-  , function (err) {
+  , function (err, config, configPath) {
       if (err) return console.error(err);
+
+      log.info('done', 'config:\n', config);
+      log.info('done', 'stored at:', configPath);
     }
 )
 .on('created-configdir', function (dir) { 
@@ -36,8 +39,5 @@ configurate(
 })
 .on('notfound-config', function (conf) { 
   log.info('configurator', 'no existing config found and no default supplied, starting from scratch'); 
-})
-.on('serialized-config', function (conf) { 
-  log.info('configurator', 'serialized config: ', conf); 
 })
 ;

@@ -20,7 +20,7 @@ function edit (config) {
 }
 
 test('\nconfig does not exist, load default, edit and serialize it. custom: edit', function (t) {
-  t.plan(8)
+  t.plan(10)
   
   var defaultConfPath         =  require.resolve('./fixtures/defaults/exports');
   var expectedConf            =  { orig: { id: 1, existed: true }, hello: 'world' };
@@ -37,10 +37,12 @@ test('\nconfig does not exist, load default, edit and serialize it. custom: edit
       , defaultConfig :  defaultConfPath
       , edit          :  edit
       }
-    , function (err) {
+    , function (err, conf_, configPath_) {
         if (err) return console.error(err);
         var conf = require(configPath);
         t.deepEqual(conf, expectedConf, 'calls back when done writing config with edits')
+        t.deepEqual(conf_, expectedConf, 'and includes updated config object')
+        t.equal(configPath_, configPath, 'and includes full config path')
     }
   )
   .on('created-configdir', function (dir) { 
