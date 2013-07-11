@@ -1,7 +1,7 @@
 {
   "name": "configurate",
   "version": "0.1.0",
-  "description": "Resolves a config with the given method or creates one from a given default or creation method.",
+  "description": "Set up workflow to load existing or default config, allow user to edit it and then serializes it to disk.",
   "main": "index.js",
   "scripts": {
     "test-main": "tap test/*.js",
@@ -27,7 +27,7 @@
     "npmlog": "0.0.3",
     "promfig": "~0.1.0"
   },
-  "keywords": [],
+  "keywords": [ "config", "configure", "configuration", "load", "default", "edit", "deserialize", "serialize", "save", "custom", "workflow" ],
   "author": {
     "name": "Thorsten Lorenz",
     "email": "thlorenz@gmx.de",

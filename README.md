@@ -1,6 +1,6 @@
 # configurate [![build status](https://secure.travis-ci.org/thlorenz/configurate.png)](http://travis-ci.org/thlorenz/configurate)
 
-Resolves a config with the given method or creates one from a given default or creation method.
+Set up workflow to load existing or default config, allow user to edit it and then serializes it to disk.
 
 **simple.js**
 
