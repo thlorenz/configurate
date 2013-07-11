@@ -87,7 +87,7 @@ function writeConfig (configFile, config, cb) {
  *
  *  config doesn't exist and no default config is given:
  *    - mkdir
- *    - edit config starting from scratch (null) 
+ *    - edit config starting from scratch ( {} ) 
  *    - serialize edited config
  *    - write config
  *    
