@@ -99,7 +99,7 @@ function writeConfig (configFile, config, cb) {
  * each function may take a second parameter (a callback) in order to process asynchronously
  *  - configDir {String}     :  directory in which the config file resides (default $HOME) if it is relative, it is created relative to $HOME
  *  - configFile {String}    :  name of the config file which is combined with the configDir to build full config file path
- *  - defaultConfig {String} :  path to default config to load in case the config is not found at the config path
+ *  - defaultConfig {String} :  full path to default config to load in case the config is not found at the config path
  *  - load {Function}        :  called with full path to config, default is `require('..')`
  *  - edit {Function}        :  called with loaded config object, by default config is not edited
  *  - serialize {Function}   :  called with edited config object, default creates `'module.exports = { ... }'`

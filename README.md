@@ -7,7 +7,7 @@ Resolves a config with the given method or creates one from a given default or c
 ```js
 var path        =  require('path')
   , rmrf        =  require('rimraf')
-  , configurate =  require('..')
+  , configurate =  require('configurate')
   , log         =  require('npmlog')
   , promfig     =  require('promfig')
   ;
@@ -45,10 +45,9 @@ configurate(
 .on('serialized-config', function (conf) { 
   log.info('configurator', 'serialized config: ', conf); 
 })
-;
 ```
 
-**default config - cjs-partial**:
+**default config - `cjs-partial`**:
 
 ```js
 module.exports = {
@@ -57,6 +56,8 @@ module.exports = {
   , numberOfDefaults :  2
 };
 ```
+
+**output**:
 
 ```
 ➝  node examples/simple.js
@@ -81,16 +82,16 @@ info configurator   password: 'supersecretpasswordiuseeverywhere' }
 
 - **opts** allows overriding invoked functions and other options
   - **paths**
-    - configDir {String}     :  directory in which the config file resides (default $HOME) if it is relative, it is created relative to $HOME
-    - configFile {String}    :  name of the config file which is combined with the configDir to build full config file path
-    - defaultConfig {String} :  path to default config to load in case the config is not found at the config path
+      - `configDir {String}`       directory in which the config file resides (default `$HOME`) if it is relative, it is created relative to `$HOME`
+      - `configFile {String}`      name of the config file which is combined with the configDir to build full config file path
+      - `defaultConfig {String}`   full path to default config to load in case the config is not found at the config path
   - **functions**
-    - each function may take a second parameter (a callback) in order to process asynchronously
-    - load {Function}        :  called with full path to config, default is `require('..')`
-    - edit {Function}        :  called with loaded config object, by default config is not edited
-    - serialize {Function}   :  called with edited config object, default creates `'module.exports = { ... }'`
+      - each function may take a second parameter (a callback) in order to process asynchronously
+      - `load {Function}`          called with full path to config, default is `require('..')`
+      - `edit {Function}`          called with loaded config object, by default config is not edited
+      - `serialize {Function}`     called with edited config object, default creates `'module.exports = { ... }'`
  
- - **cb** function (err) err is set if something went wrong
+- **cb** function (err) err is set if something went wrong
 
 - **EventEmitter** emits the following events:
   - `created-configdir` with the path to the created dir
