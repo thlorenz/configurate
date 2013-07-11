@@ -104,7 +104,11 @@ function writeConfig (configFile, config, cb) {
  *  - edit {Function}        :  called with loaded config object, by default config is not edited
  *  - serialize {Function}   :  called with edited config object, default creates `'module.exports = { ... }'`
  *
- * @param cb {Function} function (err) err is set if something went wrong
+ * @param cb {Function} function (err:Error, config:Object, configPath:String) 
+ *  - err        :  is set if something went wrong
+ *  - config     :  object that was saved including all edits, etc.
+ *  - configPath :  full path to file into which the config was saved
+ *
  * @return {EventEmitter} which emits the following events:
  *  - created-configdir with the path to the created dir
  *  - copied-default    with the path to the default config that was copied and the path to which it was copied to

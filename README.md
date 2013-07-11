@@ -90,7 +90,10 @@ info done stored at: /Users/thlorenz/dev/js/projects/configurate/examples/config
       - `edit {Function}`          called with loaded config object, by default config is not edited
       - `serialize {Function}`     called with edited config object, default creates `'module.exports = { ... }'`
  
-- **cb** function (err) err is set if something went wrong
+- **cb** function (err:Error, config:Object, configPath:String)
+  - `err`         is set if something went wrong
+  - `config`      object that was saved including all edits, etc.
+  - `configPath`  full path to file into which the config was saved
 
 - **EventEmitter** emits the following events:
   - `created-configdir` with the path to the created dir
