@@ -8,7 +8,7 @@ var path    =  require('path')
   , Emitter =  require('events').EventEmitter
   , format  =  require('util').format
   , inspect =  require('util').inspect
-  , HOME    =  path.join(__dirname, 'test', 'fixtures', 'home') // process.env.HOME
+  , HOME    =  process.env.HOME
   ;
 
 function copy(srcFile, tgtFile, cb) {
@@ -67,7 +67,8 @@ function writeConfig (configFile, config, cb) {
 }
 
 /**
- * 
+ * Supports several workflows to 'load existing or default or no configs/edit/save configuations'.
+ *
  * Possible workflows:
  *
  *  config exists:
@@ -91,11 +92,29 @@ function writeConfig (configFile, config, cb) {
  *    - serialize edited config
  *    - write config
  *    
- * @name 
+ * 
+ * @name configurate
  * @function
- * @return void
+ * @param opts {Object} allows overriding template functions and other options
+ * each function may take a second parameter (a callback) in order to process asynchronously
+ *  - configDir {String}     :  directory in which the config file resides (default $HOME) if it is relative, it is created relative to $HOME
+ *  - configFile {String}    :  name of the config file which is combined with the configDir to build full config file path
+ *  - defaultConfig {String} :  path to default config to load in case the config is not found at the config path
+ *  - load {Function}        :  overrides config load function, default is `require('..')`
+ *  - serialize {Function}   :  overrides serialization function, default creates `module.exports = { ... }`
+ *  - edit {Function}        :  overrides edit function, be default config is not edited
+ *
+ * @param cb {Function} function (err) err is set if something went wront
+ * @return {EventEmitter} which emits the following events:
+ *  - created-configdir with the path to the created dir
+ *  - copied-default    with the path to the default config that was copied and the path to which it was copied to
+ *  - loaded-config     with the loaded config
+ *  - notfound-config   with the object used to configure from scratch
+ *  - edited-config     with the edited config object
+ *  - serialized-config with the serialized config
+ *  - wrote-config      with the path that the config was written to
  */
-var go = module.exports = function (opts, cb) {
+var go = module.exports = function configurate (opts, cb) {
   opts = opts || {};
 
   var events = new Emitter();
