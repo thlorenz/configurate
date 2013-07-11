@@ -1,6 +1,6 @@
 {
   "name": "configurate",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Set up workflow to load existing or default config, allow user to edit it and then serializes it to disk.",
   "main": "index.js",
   "scripts": {
@@ -27,7 +27,19 @@
     "npmlog": "0.0.3",
     "promfig": "~0.1.0"
   },
-  "keywords": [ "config", "configure", "configuration", "load", "default", "edit", "deserialize", "serialize", "save", "custom", "workflow" ],
+  "keywords": [
+    "config",
+    "configure",
+    "configuration",
+    "load",
+    "default",
+    "edit",
+    "deserialize",
+    "serialize",
+    "save",
+    "custom",
+    "workflow"
+  ],
   "author": {
     "name": "Thorsten Lorenz",
     "email": "thlorenz@gmx.de",
