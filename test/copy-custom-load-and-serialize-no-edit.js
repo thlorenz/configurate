@@ -10,16 +10,33 @@ var path   =  require('path')
   , mkdirp =  require('mkdirp')
   ;
 
+function load (p, cb) {
+  fs.readFile(p, 'utf8', function (err, txt) {
+    if (err) return cb(err);
+    var entries = txt.trim('\n').split(',')
+    var result = entries.reduce(function (acc, e) {
+      var parts = e.split(':')
+      acc[parts[0]] = parts[1];
+      return acc;
+    }, {});
+    cb(null, result);
+  });  
+}
+
+function serialize (conf) {
+  return 'serialized: ' + JSON.stringify(conf);
+}
+
 var configDir  =  path.join(__dirname, 'fixtures', 'config')
   , configFile =  'copy-load-no-edit-serialize.js'
   , configPath =  path.join(configDir, configFile)
 
-test('\nconfig does not exist, load default, no edit and serialize it', function (t) {
+test('\nconfig does not exist, custom load default, no edit and custom serialize it', function (t) {
   t.plan(7)
   
-  var defaultConfPath         =  require.resolve('./fixtures/defaults/exports');
-  var expectedConf            =  { orig: { id: 1, existed: true } };
-  var expectedSerializedConf  =  'module.exports = { orig: { id: 1, existed: true } }'
+  var defaultConfPath         =  require.resolve('./fixtures/defaults/custom.txt');
+  var expectedConf            =  { id: '1', existed: 'true' };
+  var expectedSerializedConf  =  'serialized: {"id":"1","existed":"true"}'
 
   // clean up from previous example runs
   try { rmrf.sync(configDir); } catch (err) { console.error(err); }
@@ -30,12 +47,14 @@ test('\nconfig does not exist, load default, no edit and serialize it', function
       { configDir     :  configDir 
       , configFile    :  configFile
       , defaultConfig :  defaultConfPath
+      , load          :  load
+      , serialize     :  serialize
       }
     , function (err) {
         if (err) return console.error(err);
-        var conf = require(configPath);
-        t.deepEqual(conf, expectedConf, 'calls back when done writing config with edits')
-    }
+        var conf = fs.readFileSync(configPath, 'utf8')
+        t.deepEqual(conf, expectedSerializedConf, 'calls back when done writing config with edits')
+      }
   )
   .on('created-configdir', function (dir) { 
     t.equal(configDir, dir, 'emits created-configdir')
@@ -45,7 +64,7 @@ test('\nconfig does not exist, load default, no edit and serialize it', function
     t.equal(conf, configPath, 'and target config path')
   })
   .on('loaded-config', function (conf) { 
-    t.deepEqual(conf, require(defaultConfPath), 'emits loaded-config with default config')
+    t.deepEqual(conf, expectedConf, 'emits loaded-config with default config')
   })
   .on('notfound-config', function (conf) { 
     t.fail('should not emit notfound-config')
