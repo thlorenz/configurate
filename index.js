@@ -60,9 +60,6 @@ function noConfigFound (configFile) {
   return {};
 }
 
-function noop (config) {
-  return config;
-}
 function writeConfig (configFile, config, cb) { 
   fs.writeFile(configFile, config, 'utf8', function (err) {
     cb(err, configFile);  
@@ -117,7 +114,7 @@ var go = module.exports = function (opts, cb) {
     
   var defaultConfig =  opts.defaultConfig     || null
     , serialize     =  sinless(opts.serialize || defaultSerialize)
-    , edit          =  sinless(opts.edit      || noop)
+    , edit          =  opts.edit ? sinless(opts.edit) : null
     , notfound      =  sinless(noConfigFound)
     ;
 
@@ -157,10 +154,16 @@ var go = module.exports = function (opts, cb) {
       );
     }
 
+    if (edit) {
+      tasks = tasks.concat(
+        [ edit
+        , emit('edited-config') 
+        ]
+      )
+    }
+
     tasks = tasks.concat(
-      [ edit
-      , emit('edited-config') 
-      , serialize
+      [ serialize
       , emit('serialized-config') 
       , writeConfig.bind(null, configFile)
       , emit('wrote-config') 
