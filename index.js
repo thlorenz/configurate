@@ -13,11 +13,11 @@ var path    =  require('path')
 
 function copy(srcFile, tgtFile, cb) {
   var readStream = fs.createReadStream(srcFile)
-    , writeStream = fs.createWriteStream(tgtFile); 
+    , writeStream = fs.createWriteStream(tgtFile);
 
   writeStream
     .on('close', cb)
-    .on('error', cb); 
+    .on('error', cb);
 
   readStream
     .on('error', cb);
@@ -27,7 +27,7 @@ function copy(srcFile, tgtFile, cb) {
 
 function copyDefaultConfig(defaultConfig, configFile, cb) {
   copy(defaultConfig, configFile, function (err) {
-    cb(err, configFile);  
+    cb(err, configFile);
   });
 }
 
@@ -60,9 +60,9 @@ function noConfigFound (configFile) {
   return {};
 }
 
-function writeConfig (configFile, config, cb) { 
+function writeConfig (configFile, config, cb) {
   fs.writeFile(configFile, config, 'utf8', function (err) {
-    cb(err, configFile);  
+    cb(err, configFile);
   });
 }
 
@@ -88,11 +88,11 @@ function writeConfig (configFile, config, cb) {
  *
  *  config doesn't exist and no default config is given:
  *    - mkdir
- *    - edit config starting from scratch ( {} ) 
+ *    - edit config starting from scratch ( {} )
  *    - serialize edited config
  *    - write config
- *    
- * 
+ *
+ *
  * @name configurate
  * @function
  * @param opts {Object} allows overriding template functions and other options
@@ -104,7 +104,7 @@ function writeConfig (configFile, config, cb) {
  *  - edit {Function}        :  called with loaded config object, by default config is not edited
  *  - serialize {Function}   :  called with edited config object, default creates `'module.exports = { ... }'`
  *
- * @param cb {Function} function (err:Error, config:Object, configPath:String) 
+ * @param cb {Function} function (err:Error, config:Object, configPath:String)
  *  - err        :  is set if something went wrong
  *  - config     :  object that was saved including all edits, etc.
  *  - configPath :  full path to file into which the config was saved
@@ -132,7 +132,7 @@ var go = module.exports = function configurate (opts, cb) {
 
   var events = new Emitter();
 
-  function emit (name, arg) { 
+  function emit (name, arg) {
     return sinless(function (passthru) {
       if (!arg) arg = passthru;
       events.emit(name, arg, passthru);
@@ -143,7 +143,7 @@ var go = module.exports = function configurate (opts, cb) {
   var configDir     =  resolvePath(opts.configDir)
     , configFile    =  path.join(configDir, opts.configFile)
     ;
-    
+
   var defaultConfig =  opts.defaultConfig     || null
     , serialize     =  sinless(opts.serialize || defaultSerialize)
     , edit          =  opts.edit ? sinless(opts.edit) : null
@@ -151,22 +151,22 @@ var go = module.exports = function configurate (opts, cb) {
     ;
 
   var load = sinless(opts.load || defaultLoad);
-  
-  var tasks = [ 
+
+  var tasks = [
       runnel.seed(configFile)
-    , mkconfigDir 
-    , emit('created-configdir', configDir) 
+    , mkconfigDir
+    , emit('created-configdir', configDir)
   ];
 
   fs.exists(configFile, function (exists) {
-    if (!exists) { 
+    if (!exists) {
       if (defaultConfig) {
         // config didn't exist but we were supplied a default config
         tasks = tasks.concat(
           [ copyDefaultConfig.bind(null, defaultConfig)
-          , emit('copied-default', defaultConfig) 
+          , emit('copied-default', defaultConfig)
           , load
-          , emit('loaded-config') 
+          , emit('loaded-config', configFile)
           ]
         );
       } else {
@@ -181,7 +181,7 @@ var go = module.exports = function configurate (opts, cb) {
       // config existed
       tasks = tasks.concat(
         [ load
-        , emit('loaded-config') 
+        , emit('loaded-config', configFile)
         ]
       );
     }
@@ -189,7 +189,7 @@ var go = module.exports = function configurate (opts, cb) {
     if (edit) {
       tasks = tasks.concat(
         [ edit
-        , emit('edited-config') 
+        , emit('edited-config')
         ]
       )
     }
@@ -198,9 +198,9 @@ var go = module.exports = function configurate (opts, cb) {
 
     tasks = tasks.concat(
       [ serialize
-      , emit('serialized-config') 
+      , emit('serialized-config')
       , writeConfig.bind(null, configFile)
-      , emit('wrote-config') 
+      , emit('wrote-config')
       , function (err, configPath) {
           cb(err, currentConfig, configPath);
         }
