@@ -32,7 +32,7 @@ var configDir  =  path.join(__dirname, 'fixtures', 'config')
   , configPath =  path.join(configDir, configFile)
 
 test('\nconfig does not exist, custom load default, no edit and custom serialize it', function (t) {
-  t.plan(9)
+  t.plan(10)
   
   var defaultConfPath         =  require.resolve('./fixtures/defaults/custom.txt');
   var expectedConf            =  { id: '1', existed: 'true' };
@@ -65,8 +65,9 @@ test('\nconfig does not exist, custom load default, no edit and custom serialize
     t.equal(defaultConfig, defaultConfPath, 'emits copied-default with default config path')
     t.equal(conf, configPath, 'and target config path')
   })
-  .on('loaded-config', function (conf) { 
-    t.deepEqual(conf, expectedConf, 'emits loaded-config with default config')
+  .on('loaded-config', function (path, conf) { 
+    t.equal(path, configPath, 'emits loaded-config with config file path')
+    t.deepEqual(conf, expectedConf, 'and default config')
   })
   .on('notfound-config', function (conf) { 
     t.fail('should not emit notfound-config')

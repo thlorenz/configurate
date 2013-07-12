@@ -20,7 +20,7 @@ function edit (config, cb) {
 }
 
 test('\nload an existing config, edit and serialize it. custom: edit that is async', function (t) {
-  t.plan(8)
+  t.plan(9)
   
   var origConf                =  { orig: { id: 1, existed: true } };
   var expectedConf            =  { orig: { id: 1, existed: true }, hello: 'world' };
@@ -52,8 +52,9 @@ test('\nload an existing config, edit and serialize it. custom: edit that is asy
   .on('copied-default', function (defaultConfig, conf) { 
     t.fail('should not emit copied-default')
   })
-  .on('loaded-config', function (conf) { 
-    t.deepEqual(conf, origConf, 'emits loaded-config with original config')
+  .on('loaded-config', function (path, conf) { 
+    t.equal(path, configPath, 'emits loaded-config with config file path')
+    t.deepEqual(conf, origConf, 'and original config')
   })
   .on('notfound-config', function (conf) { 
     t.fail('should not emit notfound-config')
