@@ -1,6 +1,6 @@
 {
   "name": "configurate",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Set up workflow to load existing or default config, allow user to edit it and then serializes it to disk.",
   "main": "index.js",
   "scripts": {
