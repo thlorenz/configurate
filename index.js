@@ -49,7 +49,7 @@ function resolvePath (p) {
 }
 
 function defaultLoad (p) {
-  return require(p);
+  return require(p) || {};
 }
 
 function defaultSerialize (config) {
